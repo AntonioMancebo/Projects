@@ -1,77 +1,94 @@
 # Rentabilidad Inmueble — Android
 
-Aplicación Android en Kotlin + Jetpack Compose para trasladar al móvil el Excel de cálculo de rentabilidad inmobiliaria.
+Aplicación Android en Kotlin + Jetpack Compose que reproduce el modelo de cálculo del Excel `rentabilidad viviendas.xlsx`.
 
-## Estado actual
+## Qué reproduce
 
-La rama contiene una primera versión funcional de la interfaz y del motor hipotecario.
+El motor se ha reconstruido a partir de las fórmulas reales del Excel, no de una aproximación visual.
 
-### Fórmulas ya verificadas contra los números facilitados
-
-Para un precio de compra de 45.000 €, entrada del 10 %, financiación del 90 % y 30 años:
-
-- TIN 2,44 %:
-  - Capital financiado: 40.500,00 €
-  - Intereses totales: 16.654,83 €
-  - Capital anual medio: 1.350,00 €
-  - Interés anual medio: 555,16 €
-  - Capital mensual medio: 112,50 €
-  - Interés mensual medio: 46,26 €
-  - Cuota mensual: 158,76 €
-
-- TIN 1,55 %:
-  - Capital financiado: 40.500,00 €
-  - Intereses totales: 10.169,08 €
-  - Interés anual medio: 338,97 €
-  - Interés mensual medio: 28,25 €
-  - Cuota mensual: 140,75 €
-
-La cuota usa amortización francesa estándar. Los valores "capital/interés anual y mensual" reproducen el criterio observado en el Excel: total dividido entre años y meses.
-
-## Entradas visibles
-
-- Coste compra
+Entradas principales:
 - Entrada (%)
+- Coste de compra
 - Reformas / arreglos
 - Comisión de agencia
 - Alquiler mensual
-- Años y TIN para tres escenarios hipotecarios
+- Años y TIN de tres hipotecas
+- IRPF marginal
+- Porcentaje del valor de construcción
 
-## Salidas
+Además, los gastos que en el Excel estaban escritos como importes fijos se pueden editar desde la app para reutilizar el modelo con otras viviendas:
+- Seguro de impago
+- Basuras
+- Seguro de hogar
+- Seguro de vida
+- Comunidad
+- IBI
 
-- Coste total de adquisición
-- Dinero aportado
-- Alquiler anual
+Constantes que conserva el Excel:
+- Notario / registro / tasación / gestoría: 2 %
+- ITP / IVA: 7 %
+- Mantenimiento: 5 % del alquiler anual
+- Periodos vacíos: 5 % del alquiler anual
+- Deducción vivienda habitual: 60 %
+- Amortización fiscal: 3 %
+
+## Resultados
+
+La app muestra:
+- Coste total
+- Cash necesario para compra
+- Cash total con reforma
+- Rentabilidad bruta
+- Gastos anuales
+- Beneficio antes de impuestos (AI)
+- Rentabilidad neta AI
+- Beneficio neto después de impuestos (DI)
 - Rentabilidad Neta (DI)
-- Cash-on-Cash Return
-- Financiación
-- Capital financiado
-- Intereses totales
-- Capital e intereses medios anual/mensual
-- Cuota mensual
+- CASHFLOW AI y DI, anual y mensual
+- ROCE y años
+- Cash-on-Cash Return y años
+- Los tres escenarios hipotecarios con capital, intereses y cuota mensual
 
-## Pendiente imprescindible
+La Hipoteca 1 es el escenario que el Excel usa para calcular intereses, amortización de principal, cashflow, ROCE y Cash-on-Cash. Las hipotecas 2 y 3 son comparativas.
 
-El Excel original no está disponible en esta conversación ni en la biblioteca de archivos encontrada. Por tanto, las fórmulas de:
+## Verificación contra el Excel original
 
-- Rentabilidad Neta (DI)
-- Cash-on-Cash Return
-- umbrales exactos rojo / amarillo / verde
+Con los valores de ejemplo del archivo:
+- Coste compra: 60.000 €
+- Entrada: 10 %
+- Reformas: 1.000 €
+- Alquiler: 490 €/mes
+- Hipoteca 1: 30 años al 2,44 %
 
-están deliberadamente aisladas y marcadas como provisionales en InvestmentCalculator.kt.
+Los tests comprueban, entre otros:
+- Coste total: 66.400,00 €
+- Rentabilidad bruta: 8,86 %
+- Beneficio AI: 3.862,16 €/año
+- Rentabilidad Neta AI: 5,82 %
+- Beneficio Neto DI: 3.486,54 €/año
+- Rentabilidad Neta DI: 5,25 %
+- CASHFLOW DI: 1.686,54 €/año · 140,54 €/mes
+- ROCE: 31,15 %
+- Cash-on-Cash Return: 16,63 %
+- Cuota Hipoteca 1: 211,68 €/mes
 
-En cuanto se disponga del .xlsx original hay que leer:
-1. celdas amarillas y sus referencias;
-2. fórmulas exactas de todas las celdas calculadas;
-3. reglas de formato condicional;
-4. si existen gastos/impuestos/IBI/comunidad/seguros/vacancia no visibles en el fragmento;
-5. cualquier redondeo especial.
+También se conserva el ejemplo de 45.000 € financiando el 90 % a 30 años y 2,44 %, que da 158,76 €/mes.
 
-Después se sustituyen únicamente esas funciones manteniendo la interfaz.
+## Interfaz móvil
 
-## Tecnología
+La pantalla se divide en tres pestañas:
+1. **Resumen**: entradas principales y KPIs.
+2. **Gastos**: gastos anuales, fiscalidad y constantes.
+3. **Hipotecas**: comparación de las tres ofertas.
 
-- Kotlin
+Los campos editables usan fondo amarillo, como en el Excel. Los KPIs usan un semáforo rojo/amarillo/verde para lectura rápida.
+
+## Build
+
+GitHub Actions ejecuta los tests y genera un APK debug instalable como artifact `rentabilidad-inmueble-debug-apk`.
+
+Tecnología:
+- Kotlin integrado de AGP 9
 - Jetpack Compose
 - Material 3
 - Android Gradle Plugin 9.4.1
