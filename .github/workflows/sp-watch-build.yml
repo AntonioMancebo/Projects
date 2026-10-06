@@ -42,7 +42,7 @@ jobs:
 
       - name: Build Zepp OS package
         working-directory: SP-Watch/watch
-        run: zeus build -t default
+        run: zeus build -t "Amazfit Cheetah 2 Ultra"
 
       - name: Upload ZAB
         if: success()
