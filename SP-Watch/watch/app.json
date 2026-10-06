@@ -19,7 +19,7 @@
     }
   },
   "targets": {
-    "gt": {
+    "default": {
       "module": {
         "page": {
           "pages": ["page/home/index.page"]
@@ -34,7 +34,7 @@
       "platforms": [
         {
           "st": "r",
-          "sr": "w480"
+          "dw": 480
         }
       ]
     }
