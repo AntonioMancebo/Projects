@@ -1,0 +1,53 @@
+name: SP Watch build
+
+on:
+  push:
+    branches:
+      - sp-watch-v0.1
+    paths:
+      - 'SP-Watch/**'
+      - '.github/workflows/sp-watch-build.yml'
+  pull_request:
+    paths:
+      - 'SP-Watch/**'
+      - '.github/workflows/sp-watch-build.yml'
+  workflow_dispatch:
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: SP-Watch/watch/package.json
+
+      - name: Test bridge
+        working-directory: SP-Watch/bridge
+        run: npm test
+
+      - name: Install watch dependencies
+        working-directory: SP-Watch/watch
+        run: npm install
+
+      - name: Install Zeus CLI
+        run: npm install -g @zeppos/zeus-cli
+
+      - name: Build Zepp OS package
+        working-directory: SP-Watch/watch
+        run: zeus build -t "Amazfit Cheetah 2 Ultra"
+
+      - name: Upload ZAB
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sp-watch-zab
+          path: SP-Watch/watch/dist/**/*.zab
+          if-no-files-found: error

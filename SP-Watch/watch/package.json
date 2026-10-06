@@ -1,0 +1,14 @@
+{
+  "name": "sp-watch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Super Productivity task client for Amazfit / Zepp OS",
+  "main": "app.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@zeppos/device-types": "^3.0.0"
+  },
+  "dependencies": {
+    "@zeppos/zml": "^0.0.38"
+  }
+}
