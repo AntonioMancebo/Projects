@@ -1,0 +1,4 @@
+node_modules/
+.env
+*.zab
+.DS_Store
