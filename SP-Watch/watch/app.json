@@ -8,6 +8,7 @@
     },
     "appId": 10524117,
     "appName": "SP Watch",
+    "icon": "icon.png",
     "vender": "AntonioMancebo",
     "description": "Super Productivity tasks on Amazfit Cheetah 2 Ultra"
   },
@@ -19,7 +20,7 @@
     }
   },
   "targets": {
-    "default": {
+    "gt": {
       "module": {
         "page": {
           "pages": ["page/home/index.page"]
