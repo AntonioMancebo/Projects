@@ -42,7 +42,7 @@ jobs:
 
       - name: Build Zepp OS package
         working-directory: SP-Watch/watch
-        run: zeus build
+        run: zeus build -t default
 
       - name: Upload ZAB
         if: success()
