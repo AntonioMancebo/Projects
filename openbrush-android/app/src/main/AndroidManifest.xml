@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
     <!-- Intentionally NO INTERNET permission. -->
-    <application android:allowBackup="true" android:label="OpenBrush" android:supportsRtl="true" android:theme="@style/Theme.OpenBrush">
+    <application android:allowBackup="true" android:label="OpenBrush" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/Theme.OpenBrush">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
