@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -47,8 +48,18 @@ private val softGreen = Color(0xFFD8F3DC)
 private val softBlue = Color(0xFFDDEBFF)
 
 @Composable
-fun CalculatorScreen() {
+fun CalculatorScreen(
+    onSaveReport: (
+        String,
+        InvestmentInputs,
+        List<MortgageScenario>,
+        List<MortgageResult>,
+        InvestmentResult
+    ) -> Unit = { _, _, _, _, _ -> }
+) {
     var selectedTab by rememberSaveable { mutableStateOf(0) }
+    var reportName by rememberSaveable { mutableStateOf("") }
+    var saveMessage by rememberSaveable { mutableStateOf("") }
 
     var purchase by rememberSaveable { mutableStateOf("60000") }
     var downPayment by rememberSaveable { mutableStateOf("10") }
@@ -131,6 +142,47 @@ fun CalculatorScreen() {
                         onClick = { selectedTab = index },
                         text = { Text(title) }
                     )
+                }
+            }
+
+            if (selectedTab == 0) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    colors = CardDefaults.cardColors(containerColor = softBlue),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("Guardar esta operación", fontWeight = FontWeight.Bold)
+                        OutlinedTextField(
+                            value = reportName,
+                            onValueChange = {
+                                reportName = it
+                                saveMessage = ""
+                            },
+                            label = { Text("Nombre del informe (opcional)") },
+                            placeholder = { Text("Ej.: Piso Jaén centro") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Button(
+                            onClick = {
+                                onSaveReport(reportName, inputs, scenarios, mortgageResults, result)
+                                saveMessage = "✓ Informe guardado"
+                                reportName = ""
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Guardar informe completo")
+                        }
+                        if (saveMessage.isNotBlank()) {
+                            Text(saveMessage, style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
                 }
             }
 
