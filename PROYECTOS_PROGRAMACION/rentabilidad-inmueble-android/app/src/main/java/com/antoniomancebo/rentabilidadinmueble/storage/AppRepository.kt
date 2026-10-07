@@ -285,7 +285,7 @@ class AppRepository(context: Context) {
     }.getOrDefault(emptyList())
 
     private fun writeArray(key: String, objects: List<JSONObject>) {
-        prefs.edit().putString(key, JSONArray().apply { objects.forEach(::put) }.toString()).apply()
+        prefs.edit().putString(key, JSONArray().apply { objects.forEach { put(it) } }.toString()).apply()
     }
 
     private fun <T> JSONArray.toObjects(mapper: (JSONObject) -> T): List<T> =
