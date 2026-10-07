@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,7 +37,7 @@ import com.antoniomancebo.rentabilidadinmueble.storage.ShoppingItem
 import java.text.NumberFormat
 import java.util.Locale
 
-private val categories = listOf("Cocina", "Salón", "Dormitorio", "Baño", "Exterior", "General")
+private val categories = listOf("Cocina", "Salón", "Habitaciones", "Baño", "Exterior", "General")
 
 private enum class ShoppingSort(val label: String) {
     TOTAL("Total"),
