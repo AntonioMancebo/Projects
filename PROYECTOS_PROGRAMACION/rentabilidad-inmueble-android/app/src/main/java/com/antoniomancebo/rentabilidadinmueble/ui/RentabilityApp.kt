@@ -3,6 +3,7 @@ package com.antoniomancebo.rentabilidadinmueble.ui
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import com.antoniomancebo.rentabilidadinmueble.storage.AppRepository
 
@@ -42,9 +44,7 @@ fun RentabilityApp(
         Text(
             text = "Rentabilidad Inmueble",
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(0.08f, fill = false)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
         )
 
         TabRow(selectedTabIndex = section) {
