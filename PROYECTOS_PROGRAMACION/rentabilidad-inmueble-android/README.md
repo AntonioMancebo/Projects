@@ -94,3 +94,43 @@ Tecnología:
 - Android Gradle Plugin 9.4.1
 - Compose BOM 2026.09.00
 - JDK 17
+
+
+## Versión 0.2 — Informes y lista de compras
+
+La app incorpora dos secciones nuevas:
+
+### Informes
+
+Desde la calculadora se puede guardar una operación completa con un nombre opcional. El informe conserva:
+- todos los datos del inmueble;
+- gastos y fiscalidad;
+- los tres escenarios hipotecarios;
+- capital financiado, intereses y cuotas;
+- coste total y efectivo necesario;
+- rentabilidades, beneficio, cashflow, ROCE y Cash-on-Cash.
+
+Los informes se guardan localmente en el teléfono, se pueden desplegar para ver el detalle, compartir como texto o eliminar.
+
+### Compras
+
+Permite crear una lista de ofertas para amueblar/equipar el inmueble. Cada artículo guarda:
+- nombre;
+- categoría/estancia;
+- enlace;
+- precio del artículo;
+- precio de envío (0 € si es gratis);
+- coste total artículo + envío;
+- notas.
+
+Las categorías iniciales son Cocina, Salón, Habitaciones, Baño, Exterior y General. Los artículos aparecen agrupados por estancia y se pueden ordenar por precio del artículo, envío o precio total.
+
+### Compartir enlaces desde Android
+
+La actividad principal acepta `ACTION_SEND` para contenido de texto. Al usar **Compartir** desde un navegador o tienda compatible y elegir Rentabilidad Inmueble:
+1. se extrae automáticamente la URL;
+2. se abre directamente la sección Compras;
+3. el enlace y, cuando esté disponible, el título quedan precargados;
+4. solo hay que elegir la estancia, escribir precio y envío y guardar.
+
+No hace falta copiar ni pegar manualmente el enlace.
