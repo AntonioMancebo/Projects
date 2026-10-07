@@ -12,13 +12,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -60,6 +61,7 @@ fun CalculatorScreen(
     var selectedTab by rememberSaveable { mutableStateOf(0) }
     var reportName by rememberSaveable { mutableStateOf("") }
     var saveMessage by rememberSaveable { mutableStateOf("") }
+    var showSaveDialog by rememberSaveable { mutableStateOf(false) }
 
     var purchase by rememberSaveable { mutableStateOf("60000") }
     var downPayment by rememberSaveable { mutableStateOf("10") }
@@ -115,130 +117,146 @@ fun CalculatorScreen(
     val mortgageResults = scenarios.map { InvestmentCalculator.mortgage(inputs, it) }
     val result = InvestmentCalculator.investment(inputs, mortgageResults.first())
 
-    Scaffold { padding ->
-        Column(
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 8.dp)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "Rentabilidad de inmueble",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Mismo modelo de cálculo que el Excel · Hipoteca 1 = escenario principal",
+                    text = "Hipoteca 1 = escenario principal",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-
-            TabRow(selectedTabIndex = selectedTab) {
-                listOf("Resumen", "Gastos", "Hipotecas").forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTab == index,
-                        onClick = { selectedTab = index },
-                        text = { Text(title) }
-                    )
+            OutlinedButton(
+                onClick = {
+                    saveMessage = ""
+                    showSaveDialog = true
                 }
+            ) {
+                Text("Guardar")
             }
+        }
 
-            if (selectedTab == 0) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    colors = CardDefaults.cardColors(containerColor = softBlue),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text("Guardar esta operación", fontWeight = FontWeight.Bold)
-                        OutlinedTextField(
-                            value = reportName,
-                            onValueChange = {
-                                reportName = it
-                                saveMessage = ""
-                            },
-                            label = { Text("Nombre del informe (opcional)") },
-                            placeholder = { Text("Ej.: Piso Jaén centro") },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Button(
-                            onClick = {
-                                onSaveReport(reportName, inputs, scenarios, mortgageResults, result)
-                                saveMessage = "✓ Informe guardado"
-                                reportName = ""
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("Guardar informe completo")
-                        }
-                        if (saveMessage.isNotBlank()) {
-                            Text(saveMessage, style = MaterialTheme.typography.bodySmall)
-                        }
-                    }
-                }
-            }
+        if (saveMessage.isNotBlank()) {
+            Text(
+                text = saveMessage,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
+            )
+        }
 
-            when (selectedTab) {
-                0 -> SummaryTab(
-                    purchase = purchase,
-                    onPurchase = { purchase = it },
-                    downPayment = downPayment,
-                    onDownPayment = { downPayment = it },
-                    reforms = reforms,
-                    onReforms = { reforms = it },
-                    agency = agency,
-                    onAgency = { agency = it },
-                    rent = rent,
-                    onRent = { rent = it },
-                    result = result
-                )
-
-                1 -> ExpensesTab(
-                    rentDefaultInsurance = rentDefaultInsurance,
-                    onRentDefaultInsurance = { rentDefaultInsurance = it },
-                    wasteTax = wasteTax,
-                    onWasteTax = { wasteTax = it },
-                    homeInsurance = homeInsurance,
-                    onHomeInsurance = { homeInsurance = it },
-                    lifeInsurance = lifeInsurance,
-                    onLifeInsurance = { lifeInsurance = it },
-                    community = community,
-                    onCommunity = { community = it },
-                    ibi = ibi,
-                    onIbi = { ibi = it },
-                    incomeTaxPercent = incomeTaxPercent,
-                    onIncomeTaxPercent = { incomeTaxPercent = it },
-                    constructionValuePercent = constructionValuePercent,
-                    onConstructionValuePercent = { constructionValuePercent = it },
-                    result = result
-                )
-
-                else -> MortgagesTab(
-                    scenarios = scenarios,
-                    results = mortgageResults,
-                    years1 = years1,
-                    tin1 = tin1,
-                    years2 = years2,
-                    tin2 = tin2,
-                    years3 = years3,
-                    tin3 = tin3,
-                    onYears1 = { years1 = it },
-                    onTin1 = { tin1 = it },
-                    onYears2 = { years2 = it },
-                    onTin2 = { tin2 = it },
-                    onYears3 = { years3 = it },
-                    onTin3 = { tin3 = it }
+        TabRow(selectedTabIndex = selectedTab) {
+            listOf("Resumen", "Gastos", "Hipotecas").forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTab == index,
+                    onClick = { selectedTab = index },
+                    text = { Text(title, maxLines = 1) }
                 )
             }
         }
+
+        when (selectedTab) {
+            0 -> SummaryTab(
+                purchase = purchase,
+                onPurchase = { purchase = it },
+                downPayment = downPayment,
+                onDownPayment = { downPayment = it },
+                reforms = reforms,
+                onReforms = { reforms = it },
+                agency = agency,
+                onAgency = { agency = it },
+                rent = rent,
+                onRent = { rent = it },
+                result = result
+            )
+
+            1 -> ExpensesTab(
+                rentDefaultInsurance = rentDefaultInsurance,
+                onRentDefaultInsurance = { rentDefaultInsurance = it },
+                wasteTax = wasteTax,
+                onWasteTax = { wasteTax = it },
+                homeInsurance = homeInsurance,
+                onHomeInsurance = { homeInsurance = it },
+                lifeInsurance = lifeInsurance,
+                onLifeInsurance = { lifeInsurance = it },
+                community = community,
+                onCommunity = { community = it },
+                ibi = ibi,
+                onIbi = { ibi = it },
+                incomeTaxPercent = incomeTaxPercent,
+                onIncomeTaxPercent = { incomeTaxPercent = it },
+                constructionValuePercent = constructionValuePercent,
+                onConstructionValuePercent = { constructionValuePercent = it },
+                result = result
+            )
+
+            else -> MortgagesTab(
+                scenarios = scenarios,
+                results = mortgageResults,
+                years1 = years1,
+                tin1 = tin1,
+                years2 = years2,
+                tin2 = tin2,
+                years3 = years3,
+                tin3 = tin3,
+                onYears1 = { years1 = it },
+                onTin1 = { tin1 = it },
+                onYears2 = { years2 = it },
+                onTin2 = { tin2 = it },
+                onYears3 = { years3 = it },
+                onTin3 = { tin3 = it }
+            )
+        }
+    }
+
+    if (showSaveDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showSaveDialog = false
+                reportName = ""
+            },
+            title = { Text("Guardar informe") },
+            text = {
+                OutlinedTextField(
+                    value = reportName,
+                    onValueChange = { reportName = it },
+                    label = { Text("Nombre del informe (opcional)") },
+                    placeholder = { Text("Ej.: Piso Jaén centro") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onSaveReport(reportName, inputs, scenarios, mortgageResults, result)
+                        reportName = ""
+                        saveMessage = "✓ Informe guardado"
+                        showSaveDialog = false
+                    }
+                ) {
+                    Text("Guardar")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        reportName = ""
+                        showSaveDialog = false
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
 
