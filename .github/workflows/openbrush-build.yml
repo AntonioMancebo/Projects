@@ -37,11 +37,11 @@ jobs:
         run: gradle :app:assembleDebug --stacktrace
 
       - name: Rename APK
-        run: cp openbrush-android/app/build/outputs/apk/debug/app-debug.apk OpenBrush-v0.1-debug.apk
+        run: cp openbrush-android/app/build/outputs/apk/debug/app-debug.apk OpenBrush-v0.2-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: OpenBrush-v0.1-debug
-          path: OpenBrush-v0.1-debug.apk
+          name: OpenBrush-v0.2-debug
+          path: OpenBrush-v0.2-debug.apk
           if-no-files-found: error
